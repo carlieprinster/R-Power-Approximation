@@ -86,4 +86,5 @@ ex_poissonmodel <- glmmTMB(exp_count ~ rate + trt*rate  + (1|block) + (1|block:t
                            data = ex_poisson, family = poisson(), start = start_vals, map = map_vals)
 
 #call function
-power_F_glmmTMB(ex_poissonmodel, "rate:trt", 0.05, ex_poisson)
+power_F_glmmTMB(ex_poissonmodel, "rate", 0.05, ex_poisson)
+
