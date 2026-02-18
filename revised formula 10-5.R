@@ -1,39 +1,18 @@
 
-
+#clean environment
 rm(list=ls())
 
-
+#Set working directory
 setwd("~/Summer25")
+
+#Include necessary libraries
 library(blme)
 library(lme4)
-load("~/Summer25/ex_gaussian.rda")  
 library(dplyr)
 library(tidyr)
-
 library(emmeans)
-trt <- as.factor(c(rep(1, 12), rep(2, 12)))
-rate <- as.factor(rep(c(rep(1, 4), rep(2, 4), rep(3, 4)), 2))
-exp_count <- c(rep(10, 4), rep(9, 4), rep(8, 4), rep(9, 4), rep(6, 4), rep(3, 4))
 
-block <- as.factor(rep(1:4, 6))
-
-ex_poisson <- cbind.data.frame(trt, rate, exp_count, block)
-
-trt <- as.factor(c(rep(1, 12), rep(2, 12)))
-rate <- as.factor(rep(c(rep(1, 4), rep(2, 4), rep(3, 4)), 2))
-exp_count <- c(rep(10, 4), rep(9, 4), rep(8, 4), rep(9, 4), rep(6, 4), rep(3, 4))
-block <- as.factor(rep(1:4, 6))
-ex_poisson <- cbind.data.frame(trt, rate, exp_count, block)
-
-
-trt <- as.factor(c(rep(0, 4), rep(1, 4)))
-n <- rep(65, 8)
-pi <- c(rep(0.15, 4), rep(0.25, 4))
-location <- as.factor(rep(1:4, 2))
-expected_y <- n * pi
-ex_binomial <- cbind.data.frame(trt, n, pi, location, expected_y)
-
-
+#function declaration
 power_mm_8_30 <- function(Formula, Varcomp, Data, Expanded_Data = NULL, Family, Fixed_Effects = NULL, Random_Effects = NULL, Alpha,
                           Resid_var = NULL, tol = 1e-6, Optimizer = "nloptwrap", OptCtrl = list(maxeval = 2e5), NAGQ0initStep = 0) {
   
@@ -268,15 +247,6 @@ power_mat <- as.matrix(power_mat)
   
 }
 
-#Expand Data
-expanded <- uncount(ex_binomial, weights=n) 
-library(lme4)
-data(sleepstudy)
-head(sleepstudy)
-start = list(theta = c(log(sqrt(1378.2))), betadisp = log(sqrt(960.5)))
-map = list(theta = factor(c(NA)), betadisp = factor(NA))
-sleepstudy$Days <- as.factor(sleepstudy$Days)
-
 poisson_example <- power_mm_8_30(Formula = exp_count ~ rate + trt*rate + (1 | block) + (1 | block:trt), Varcomp = c(0.25,0.15), 
               Resid_var = NULL, Data = ex_poisson, Family = "poisson", 
               Random_Effects = c("block", "block:trt"), Fixed_Effects = c("trt", "rate", "rate:trt"), Alpha = 0.05,
@@ -299,3 +269,4 @@ gaussian_example2 <- power_mm_8_30(Formula = Reaction ~  Days + (1 | Subject),
                                    Varcomp = 1378.2, Resid_var = 960.5, Data = sleepstudy,
                                    Family = "gaussian", Random_Effects = c("Subject"), Fixed_Effects =c("Days"),
                                    Alpha = 0.05)
+
