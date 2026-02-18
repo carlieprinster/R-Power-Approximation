@@ -15,12 +15,21 @@ location <- as.factor(rep(1:4, 2))
 expected_y <- n * pi
 ex_binomial <- cbind.data.frame(trt, n, pi, location, expected_y)
 
+#Expand Data
+expanded <- uncount(data, weights=n) 
+
 #gaussian dataset
 Thatch <- as.factor(c(rep(2, 16), rep(5, 16), rep(8, 16)))
 NSource <- rep(c(rep("AmmSulph", 4), rep("IBDU", 4), rep("SCUrea", 4), rep("Urea", 4)), 3)
 estY <- c(rep(6, 12), rep(4, 4), rep(c(rep(6, 4), rep(7, 4), rep(8, 4), rep(5, 4)), 2))
 Field <- as.factor(rep(1:4, 12))
 ex_gaussian <- cbind.data.frame(Thatch, NSource, estY, Field)
+
+#gaussian dataset - sleep
+#included in the lme4 package
+library(lme4)
+data(sleepstudy)
+
 
 
 
