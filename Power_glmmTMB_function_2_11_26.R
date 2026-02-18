@@ -10,26 +10,17 @@ power_F_glmmTMB <- function(model, terms, alpha = 0.05, Data) {
   jt <- joint_tests(emm_obj)
   jt_df <- as.data.frame(jt)
   f<- as.numeric(as.character(jt_df[jt_df$`model term` == terms, "F.ratio"]))
-  print(f)
   formula_short <- model$modelInfo$allForm$formula
   environment(formula_short) <- environment()
   
-  
-  print(formula_short)
+
   b3 <- lmerTest::lmer(formula_short, Data)
-  print(b3)
   aov_b3 <- anova(b3, ddf = "Kenward-Roger")
-  print(aov_b3)
   ndf <- aov_b3[terms, "NumDF"]
-  print(ndf)
   noncent_param <- ndf * f
-  print(noncent_param)
   ddf <- aov_b3[terms, "DenDF"]
-  print(ddf)
   FCrit <- qf(1 - alpha, ndf, ddf, 0)
-  print(FCrit)
   power <- 1 - pf(FCrit, ndf, ddf, noncent_param)
-  print(power)
   
   
   
@@ -99,5 +90,6 @@ ex_poissonmodel <- glmmTMB(exp_count ~ rate + trt*rate  + (1|block) + (1|block:t
 
 #call function
 power_F_glmmTMB(ex_poissonmodel, "rate", 0.05, ex_poisson)
+
 
 
