@@ -47,18 +47,27 @@ power_F_glmmTMB <- function(model, terms, alpha = 0.05, Data) {
 start = list(theta = log(c(sqrt(0.008), sqrt(0.07))), betadisp = log(sqrt(0.2)))
 map = list(theta = factor(c(NA, NA)), betadisp = factor(NA))
 
-ex_gaussianmodel <- glmmTMB(
-  estY ~ NSource * Thatch + (1 | Field) + (1 | Field:NSource),
-  data = ex_gaussian,
-  family = gaussian(),
-  start = start,
-  map = map
-)
+ex_gaussianmodel <- glmmTMB(estY ~ NSource * Thatch + (1 | Field) + (1 | Field:NSource),
+                            data = ex_gaussian,
+                            family = gaussian(),
+                            start = start,
+                            map = map)
 
 #call function
 power_F_glmmTMB(ex_gaussianmodel, "NSource:Thatch", 0.05, ex_gaussian)
 
+##gaussian power - sleepstudy##
+#build model
+start = list(theta = c(log(sqrt(1378.2))), betadisp = log(sqrt(960.5)))
+map = list(theta = factor(c(NA)), betadisp = factor(NA))
 
+sleep_model <- glmmTMB(Reaction ~  Days + (1 | Subject), 
+                       data = sleepstudy, 
+                       family = gaussian(),
+                       start = start, 
+                       map = map)
+
+power_F_glmmTMB(sleep_model, "Days", 0.05, sleepstudy)
 
 ###binomial power###
 
@@ -79,12 +88,16 @@ power_F_glmmTMB(ex_binomialmodel, "trt", 0.05, expanded_data)
 ###poisson power###
 
 #build model
-start_vals <- list(theta = log(c(sqrt(0.25), sqrt(0.15))))
-map_vals <- list(theta = factor(c(NA, NA)))
+start <- list(theta = log(c(sqrt(0.25), sqrt(0.15))))
+map <- list(theta = factor(c(NA, NA)))
 
 ex_poissonmodel <- glmmTMB(exp_count ~ rate + trt*rate  + (1|block) + (1|block:trt), 
-                           data = ex_poisson, family = poisson(), start = start_vals, map = map_vals)
+                           data = ex_poisson, 
+                           family = poisson(), 
+                           start = start, 
+                           map = map)
 
 #call function
 power_F_glmmTMB(ex_poissonmodel, "rate", 0.05, ex_poisson)
+
 
