@@ -29,6 +29,8 @@ ex_gaussian <- cbind.data.frame(Thatch, NSource, estY, Field)
 #included in the lme4 package
 library(lme4)
 data(sleepstudy)
+#Watch out for fixed variable type
+sleepstudy$Days <- as.factor(sleepstudy$Days)
 
 
 
