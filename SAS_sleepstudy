@@ -1,0 +1,28 @@
+FILENAME REFFILE '/home/u63999319/sleepstudy.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=CSV
+	OUT=sleep;
+	GETNAMES=YES;
+RUN;
+
+proc glimmix data=sleep;
+class Subject;
+  model Reaction = Days;
+  random intercept /subject = Subject; 
+  parms (1378.2) (960.5) / hold=1,2;
+  ods output tests3=power;
+  title1 'Dummy Analysis of Exemplary Data Set';
+  title2 '(just to get F-statistic)';
+  
+/* Approximate power */
+data Fpower; set power;
+  where Effect = 'Days';
+  alpha = 0.05;
+  nonCent_param = NumDF*Fvalue;
+  FCrit = finv(1-alpha,NumDF,DenDF,0);
+  Power = 1 - probf(Fcrit,NumDF,DenDF,nonCent_param);
+run;
+proc print data=Fpower noobs;
+  title1 'Power of test - F Test Statistic';
+run;
