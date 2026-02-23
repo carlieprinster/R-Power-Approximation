@@ -1,0 +1,135 @@
+/* POWER APPROXIMATION FOR GAUSSIAN DATA: */ 
+
+data ex;
+  input Thatch NSource $ estY;
+    do Field=1 to 4 by 1; /* 4 = number of Fields */
+      output;
+            end;
+  cards;
+     2  AmmSulph   6
+     2  IBDU       6
+     2  SCUrea     6
+     2  Urea       4 
+     5  AmmSulph   6
+     5  IBDU       7
+     5  SCUrea     8
+     5  Urea       5
+     8  AmmSulph   6
+     8  IBDU       7
+     8  SCUrea     8
+     8  Urea       5
+     ;
+run;
+proc print data=ex;
+  title1 'Exemplary Set';
+run; 
+/* Obtain test statistic */
+proc glimmix data=ex noprofile;
+  class NSource Field Thatch;
+  model estY = NSource | Thatch;
+  random Field Field*NSource;
+  parms (.008)(.07)(.2) / hold=1,2,3;
+  ods output tests3=power;
+  title1 'Dummy Analysis of Exemplary Data Set';
+  title2 '(just to get F-statistic)';
+run; 
+/* Approximate power */
+data power; set power;
+  where Effect = 'NSource*Thatch';
+  alpha = 0.05;
+  nonCent_param = NumDF*Fvalue;
+  FCrit = finv(1-alpha,NumDF,DenDF,0);
+  Power = 1 - probf(Fcrit,NumDF,DenDF,nonCent_param);
+run;
+proc print data=power noobs;
+  title1 'Power of test for NSource*Thatch';
+run;
+
+
+/* POWER APPROXIMATION FOR BINOMIAL DATA: */
+
+data binomial ;
+	input trt n pi ;
+	do location = 1 to 4 by 1 ;
+		expected_y = n * pi ;
+		output ;
+	end;
+	datalines;
+	0 65 0.15
+	1 65 0.25
+        ;
+run ;
+proc print data = binomial;
+run; 
+proc glimmix data = binomial ; 
+	class location trt ;
+	model expected_y / n = trt / dist = bin link = logit ;
+	random intercept trt / subject = location ;
+	parms (0.02)(0.05) / hold = 1,2 ;
+	ods output tests3 = power ;
+run ;
+data power ;
+	set power ;
+	alpha = 0.05 ;
+	non_cent_parm = numdf * Fvalue ;
+	F_critical = Finv(1 - alpha, numdf, dendf, 0) ;
+	Power = 1 - Probf(F_critical, numdf, dendf, non_cent_parm) ;
+run ;
+proc print data = power noobs ;
+  title1 'Power of test for Expected_Y / n' ;
+run ; 
+	
+
+/* POWER APPROXIMATION FOR POISSON DATA: */
+
+
+data splitplot ;
+	input trt rate exp_count ;
+	do block = 1 to 4 by 1 ;
+		output ;
+	end ;
+	datalines ;
+	1 1 10
+	1 2 9
+	1 3 8
+	2 1 9
+	2 2 6
+	2 3 3 
+       ;
+run;
+proc print data = splitplot ; 
+run;
+proc glimmix data = splitplot initglm ; 
+	class block trt rate ;
+	model exp_count = trt rate trt * rate / dist = poisson link = log;
+	*contrast 'trt x lin rate' trt * rate -1 0 1 1 0 -1 ;
+	*lsmeans trt | rate / diff slicediff = (trt rate) ilink ;
+	/*random intercept trt / subject = block ;*/
+	random block trt*block ;
+	parms (0.25)(0.15) / hold = 1,2 ;
+	ods output tests3 = power ;
+run;
+data power ; set power;
+	where Effect = 'rate';
+	alpha = 0.05 ;
+	non_cent_parm = numdf * Fvalue ;
+	F_critical = Finv(1 - alpha, numdf, dendf, 0) ;
+	Power = 1 - Probf(F_critical, numdf, dendf, non_cent_parm) ;
+run ;
+proc print data = power noobs ;
+  title1 'Power of test for Expected_Y / n' ;
+run ; 
+data temp; 
+	input new_count @@; 
+	cards;
+	10  9 10 10  8  9  6  3  9  9  8  9  6  3  8  9  8  6  6  9  9  3 10  3
+	;
+data temp2; 
+	merge splitplot temp;
+proc print data = temp2 ;
+run;
+proc glimmix data = temp2 method=rspl; 
+	class block trt rate ;
+	model new_count = trt rate trt * rate / dist = poisson link = log solution;
+run;	
+	
