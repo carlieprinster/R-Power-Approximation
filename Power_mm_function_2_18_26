@@ -13,7 +13,7 @@ library(tidyr)
 library(emmeans)
 
 #function declaration
-power_mm_8_30 <- function(Formula, Varcomp, Data, Expanded_Data = NULL, Family, Fixed_Effects = NULL, Random_Effects = NULL, Alpha,
+power_mm_2 <- function(Formula, Varcomp, Data, Expanded_Data = NULL, Family, Fixed_Effects = NULL, Random_Effects = NULL, Alpha,
                           Resid_var = NULL, tol = 1e-6, Optimizer = "nloptwrap", OptCtrl = list(maxeval = 2e5), NAGQ0initStep = 0) {
   
   set.seed(123)
@@ -247,25 +247,25 @@ power_mat <- as.matrix(power_mat)
   
 }
 
-poisson_example <- power_mm_8_30(Formula = exp_count ~ rate + trt*rate + (1 | block) + (1 | block:trt), Varcomp = c(0.25,0.15), 
+poisson_example <- power_mm_2(Formula = exp_count ~ rate + trt*rate + (1 | block) + (1 | block:trt), Varcomp = c(0.25,0.15), 
               Resid_var = NULL, Data = ex_poisson, Family = "poisson", 
               Random_Effects = c("block", "block:trt"), Fixed_Effects = c("trt", "rate", "rate:trt"), Alpha = 0.05,
               tol = 1e-6, Optimizer = "nloptwrap", OptCtrl = list(maxeval = 2e5), NAGQ0initStep = 0)
 
 
-gaussian_example <-  power_mm_8_30(Formula = estY ~ NSource*Thatch + (1 | Field) + (1|Field:NSource), 
+gaussian_example <-  power_mm_2(Formula = estY ~ NSource*Thatch + (1 | Field) + (1|Field:NSource), 
                                   Varcomp = c(0.008, 0.07), Resid_var = 0.2, Data = ex_gaussian,
                                   Family = "gaussian", Fixed_Effects =c("NSource", "NSource:Thatch", "Thatch"),
                                   Alpha = 0.05)
 
 
-binomial_example <- power_mm_8_30(Formula = cbind((expected_y), n - (expected_y)) ~ 1 + trt + (1 | location) + 
+binomial_example <- power_mm_2(Formula = cbind((expected_y), n - (expected_y)) ~ 1 + trt + (1 | location) + 
                                     (1 | location:trt), Varcomp = c(0.02,0.05), Resid_var = NULL, Data = ex_binomial, Expanded_Data = expanded, 
                                   Family = "binomial", Random_Effects = c("location", "location:trt"), Fixed_Effects = c("trt")  ,Alpha = 0.05, tol = 1e-6, 
                                   Optimizer = "nloptwrap", OptCtrl = list(maxeval = 2e5), NAGQ0initStep = 0)
 
 
-gaussian_example2 <- power_mm_8_30(Formula = Reaction ~  Days + (1 | Subject), 
+gaussian_example2 <- power_mm_2(Formula = Reaction ~  Days + (1 | Subject), 
                                    Varcomp = 1378.2, Resid_var = 960.5, Data = sleepstudy,
                                    Family = "gaussian", Random_Effects = c("Subject"), Fixed_Effects =c("Days"),
                                    Alpha = 0.05)
