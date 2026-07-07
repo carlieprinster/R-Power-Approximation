@@ -16,7 +16,7 @@ expected_y <- n * pi
 ex_binomial <- cbind.data.frame(trt, n, pi, location, expected_y)
 
 #Expand Data
-expanded <- uncount(data, weights=n) 
+expanded <- uncount(ex_binomial, weights=n) 
 
 #gaussian dataset
 Thatch <- as.factor(c(rep(2, 16), rep(5, 16), rep(8, 16)))
