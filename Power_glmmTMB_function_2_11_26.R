@@ -22,13 +22,14 @@ power_F_glmmTMB <- function(model, terms, alpha = 0.05, Data) {
   FCrit <- qf(1 - alpha, ndf, ddf, 0)
   power <- 1 - pf(FCrit, ndf, ddf, noncent_param)
   
-  
-  
-  data_frame = data.frame(power, FCrit, ndf, ddf , noncent_param)
-  
-  
-  
-  return(data_frame)
+  power_mat <- matrix(power)
+  power_mat_t <- t(power_mat)
+
+  colnames(power_mat_t) <-terms
+  rownames(power_mat_t) <- "Power Approximation"
+
+  print(power_mat_t)
+
   
 }
 
