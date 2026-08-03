@@ -42,6 +42,7 @@ map = list(theta = factor(c(NA, NA)), betadisp = factor(NA))
 ex_gaussianmodel <- glmmTMB(estY ~ NSource * Thatch + (1 | Field) + (1 | Field:NSource),
                             data = ex_gaussian,
                             family = gaussian(),
+                            control = glmmTMBControl(optimizer = optim, optArgs = list(method = "BFGS")),
                             start = start,
                             map = map)
 
