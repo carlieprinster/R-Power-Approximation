@@ -1,16 +1,17 @@
 Package: glmpa
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Authors@R: c(
-    person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
-  )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Title: Power Approximation for Generalized Linear Mixed Models
+Version: 0.0.0.9000
+Authors@R: 
+    person("Carlie", "Prinster", , "gapeach292@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Functions to approximate power of generalized linear mixed
+    models using the probability distribution method (PDM), via the blme
+    or glmmTMB packages to fix random variance components.
+Imports: glmmTMB, 
+          blme, 
+          emmeans,
+          lmerTest
+License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
