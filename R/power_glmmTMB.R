@@ -8,7 +8,7 @@
 #' @return A data frame of power approximations per fixed effect.
 #' @examples
 #' # see vignette for full example
-#' @import glmmTMB
+#' @import blme
 #' @import emmeans
 #' @export
 
